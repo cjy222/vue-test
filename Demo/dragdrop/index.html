@@ -7,13 +7,15 @@
 </head>
 <body>
 	<div id="app">
-		<transition-group name="flip-list" tag="div">
+		<transition-group name="top-fade" tag="div">
 			<div v-for="(color, index) in colorMap" class="box-wrap" ref="box" :key="'color'+color">
 				<div class="dropArea" @dragover.prevent @drop.prevent="drop($event, index)"></div>
 				<div class="box" :style="`background: ${color};`" @dragstart="drag($event, index)" draggable="true"></div>
 			</div>
-			<div class="dropArea" @dragover.prevent @drop.prevent="drop($event, colorMap.length)" :key="'color'+colorMap.length"></div>
 		</transition-group>
+		<div class="dropArea" @dragover.prevent @drop.prevent="drop($event, colorMap.length)" :key="'color'+colorMap.length"></div>
+		<button @click="add">add</button>
+		<transition-group name="bottom" tag="div"></transition-group>
 	</div>
 </body>
 </html>
@@ -51,12 +53,23 @@
 					console.log(index)
 					this.colorMap.splice(index - 1, 0, color)
 				}		
+			},
+			add() {
+				this.colorMap.push('red')
 			}
 		}
 	})
 </script>
 
 <style>
+body {
+	margin: 0;
+}
+#app {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
 .box-wrap {
 	float: left;
 	width: 200px;
@@ -75,8 +88,18 @@
 	border: 1px solid #000;
 	box-sizing: border-box;
 }
-
-.flip-list-move {
+.top-fade-move {
   transition: transform .3s;
+}
+.top-fade-enter-active {
+  transition: all .3s ease;
+}
+.top-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.top-fade-enter, .top-fade-leave-to
+/* .top-fade-leave-active for below version 2.1.8 */ {
+  transform: translateY(100px);
+  opacity: 0;
 }
 </style>
