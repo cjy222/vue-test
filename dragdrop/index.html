@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="../js/vue.js"></script>
+</head>
+<body>
+	<div id="app">
+		<transition-group name="flip-list" tag="div">
+			<div v-for="(color, index) in colorMap" class="box-wrap" ref="box" :key="'color'+color">
+				<div class="dropArea" @dragover.prevent @drop.prevent="drop($event, index)"></div>
+				<div class="box" :style="`background: ${color};`" @dragstart="drag($event, index)" draggable="true"></div>
+			</div>
+			<div class="dropArea" @dragover.prevent @drop.prevent="drop($event, colorMap.length)" :key="'color'+colorMap.length"></div>
+		</transition-group>
+	</div>
+</body>
+</html>
+<script>
+	window.app = new Vue({
+		el: '#app',
+		data() {
+			return {
+				colorMap: ['red', 'blue', 'yellow', 'green'],
+				dragIndex: null,
+				dropIndex: null,
+			}
+		},
+		created() {
+			this.$nextTick(() => {
+				console.log(this.$el)
+			})			
+		},
+		methods: {
+			drag(ev, index) {
+				this.dragIndex = index
+			},
+			drop(ev, index) {
+				this.dropIndex = index
+				if (index - this.dragIndex === 1) {
+					return
+				} else if (index === this.dragIndex) {
+					return
+				} else if (index < this.dragIndex) {
+					color = this.colorMap.splice(this.dragIndex, 1)
+					this.colorMap.splice(index, 0, color)
+				} else {
+					color = this.colorMap.splice(this.dragIndex, 1)
+					console.log(color)
+					console.log(index)
+					this.colorMap.splice(index - 1, 0, color)
+				}		
+			}
+		}
+	})
+</script>
+
+<style>
+.box-wrap {
+	float: left;
+	width: 200px;
+	height: 60px;
+	margin-left: 2px;
+}
+.dropArea {
+	float: left;
+	width: 50px;
+	height: 60px;
+}
+.box {
+	float: left;
+	width: 150px;
+	height: 60px;
+	border: 1px solid #000;
+	box-sizing: border-box;
+}
+
+.flip-list-move {
+  transition: transform .3s;
+}
+</style>
